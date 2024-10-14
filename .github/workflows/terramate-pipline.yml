@@ -1,0 +1,53 @@
+name: Terramate Pipeline
+
+# Defina quando o pipeline deve ser executado (push em branches, PRs, etc.)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terramate:
+    name: Run Terramate
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Checkout do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Passo 2: Instalar Terramate (e, se necessário, Terraform)
+      - name: Install Terramate
+        run: |
+          curl -L https://github.com/mineiros-io/terramate/releases/download/v0.2.0/terramate-linux-amd64 -o /usr/local/bin/terramate
+          chmod +x /usr/local/bin/terramate
+      
+      # Instalar Terraform (se for necessário)
+      - name: Install Terraform
+        run: |
+          sudo apt-get update && sudo apt-get install -y unzip
+          curl -LO https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip
+          unzip terraform_1.5.0_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
+          terraform --version
+          
+      # Passo 3: Inicializar e executar o Terramate
+      - name: Run Terramate commands
+        run: |
+          terramate init
+          terramate list stacks
+          terramate plan --all
+      
+      # Opcional: Validar o Terraform
+      - name: Validate Terraform
+        run: |
+          terraform validate
+        
+      # Opcional: Aplicar mudanças (cuidado com execuções automáticas)
+      - name: Apply Terraform changes
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          terramate apply --auto-approve
