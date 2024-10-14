@@ -25,4 +25,4 @@ jobs:
         run: |
           terramate version
           terramate list
-          terramate plan --all
+          terramate plan
