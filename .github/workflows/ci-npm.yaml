@@ -1,0 +1,43 @@
+name: Dynamic npm Project Creation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Create npm project
+      run: |
+        mkdir my-project
+        cd my-project
+        npm init -y
+        echo "console.log('Hello, world!');" > index.js
+
+    - name: Install dependencies
+      run: |
+        cd my-project
+        npm install
+
+    - name: Run Terramate
+      run: |
+        cd my-project
+        terramate apply
+
+    - name: Publish to npm
+      run: |
+        cd my-dynamic-project
+        npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
