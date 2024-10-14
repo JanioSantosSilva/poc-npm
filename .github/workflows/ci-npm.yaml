@@ -17,6 +17,12 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
+        
+    - name: Install Terramate
+      run: |
+        curl -L https://github.com/mineiros-io/terramate/releases/download/v0.1.0/terramate_0.1.0_linux_amd64.tar.gz -o terramate.tar.gz
+        tar -xzf terramate.tar.gz
+        sudo mv terramate /usr/local/bin/
 
     - name: Create npm project
       run: |
