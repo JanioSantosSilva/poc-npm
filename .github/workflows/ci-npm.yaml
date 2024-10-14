@@ -3,7 +3,7 @@ name: Dynamic npm Project Creation
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   create-and-publish:

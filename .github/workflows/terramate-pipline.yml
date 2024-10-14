@@ -19,11 +19,10 @@ jobs:
       - name: Install and use Terramate
         uses: terramate-io/terramate-action@v1
         with:
-          version: "0.4.2"
+          version: "0.4.3"
       
       - name: Run Terramate commands
         run: |
           terramate version
-          terramate init
           terramate list stacks
           terramate plan --all
